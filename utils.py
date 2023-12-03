@@ -3,7 +3,7 @@ import requests
 import json
 
 
-async def check_url(seats, url):
+async def check_url(seats, url, reserved):
     response = requests.get(url)
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
@@ -14,4 +14,4 @@ async def check_url(seats, url):
     data = json.loads(data_element['data-enrollment'])
     enrolled = data.get("available", {}).get("enrollmentStatus", {}).get("enrolledCount", 0)
     max_enrolled = data.get("available", {}).get("enrollmentStatus", {}).get("maxEnroll", 0)
-    return max_enrolled - enrolled
+    return max_enrolled - enrolled - reserved

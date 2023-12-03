@@ -10,3 +10,5 @@ Notifies whenever a new seat opens up in a particular course.
 - `$set_channel` - choose channel for bot to report in
 - `$add_class url` - monitor url
 - `$set_refresh mins` - change refresh rate (default 5)  
+- `$list_classes` - get class info
+- `$delete_class id` - delete class with id
