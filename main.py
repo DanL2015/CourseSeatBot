@@ -75,10 +75,6 @@ async def add_class(ctx, *args):
     elif (len(args) == 1):
         args.append(0)
 
-    try:
-        reserved_seats = int(args[1])
-    except ValueError:
-        reserved_seats = 0
     url = args[0]
     server = servers.find_one({"_id": ctx.guild.id})
     channel = bot.get_channel(server["channel_id"])
@@ -86,7 +82,7 @@ async def add_class(ctx, *args):
         await ctx.channel.send("Set your channel first with $set_channel")
         return
     servers.update_one({"_id": ctx.guild.id}, {
-        "$push": {"classes": {"url": url, "reserved_seats": reserved_seats, "seats": -1}}})
+        "$push": {"classes": {"url": url, "seats": -1}}})
     await channel.send(f"Watching url {url}")
 
 
@@ -97,7 +93,7 @@ async def list_classes(ctx):
     i = 1
     await channel.send("Watching the following classes:")
     for cls in server["classes"]:
-        await channel.send(f"{i}. Url: {cls['url']}, Reserved Seats: {cls['reserved_seats']}, Current Available Seats: {cls['seats']}")
+        await channel.send(f"{i}. Url: {cls['url']}, Current Available Seats: {cls['seats']}")
         i += 1
 
 
@@ -128,8 +124,7 @@ async def update():
             for cls in server["classes"]:
                 seats = cls["seats"]
                 url = cls["url"]
-                reserved_seats = cls["reserved_seats"]
-                available = await check_url(seats, url, reserved_seats)
+                available = await check_url(seats, url)
                 if available != seats:
                     cls["seats"] = available
                     await channel.send(f"The number of open seats for {url} has changed to {available}")
